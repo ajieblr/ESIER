@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "392144853592",
+    "project_id": "esier-96fe9",
+    "storage_bucket": "esier-96fe9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:392144853592:android:48e5923534ae95d820082d",
+        "android_client_info": {
+          "package_name": "com.ajieblrsapplication.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCe25TSCe8hody6WP1hOzSBU0ykuLxWpGI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
