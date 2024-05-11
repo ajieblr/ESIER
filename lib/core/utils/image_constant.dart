@@ -34,4 +34,5 @@ class ImageConstant {
   static String arrowLeftVector = 'assets/images/arrow_left_vector.svg';
   static String dana = 'assets/images/dana.png';
   static String gopay = 'assets/images/gopay.png';
+  static String card = 'assets/images/card.png';
 }

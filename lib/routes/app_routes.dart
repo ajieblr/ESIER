@@ -1,5 +1,6 @@
 // ignore_for_file: duplicate_ignore
 
+import 'package:ajieblr_s_application3/presentation/metode_pembayaran_screen/metode_pembayaran_screen.dart';
 import 'package:flutter/material.dart';
 // import '../core/app_export.dart';
 import '../presentation/app_navigation_screen/app_navigation_screen.dart';
@@ -32,6 +33,8 @@ class AppRoutes {
   
   static const String detailPembayaranScreen = '/detail_pembayaran_screen';
 
+  static const String metodePembayaranScreen = '/metode_pembayaran_screen';
+
   static const String initialRoute = '/initialRoute';
 
   static Map<String, WidgetBuilder> routes = {
@@ -44,6 +47,7 @@ class AppRoutes {
     contactUsScreen: (context) => ContactUsScreen(),
     paymentMethodScreen: (context) => TambahMetodePembayaranScreen(),
     detailPembayaranScreen: (context) => DetailPembayaranScreen(),
-    initialRoute: (context) => DetailPembayaranScreen()
+    metodePembayaranScreen: (context) => MetodePembayaranScreen(),
+    initialRoute: (context) => HomePageScreen()
   };
 }

@@ -1,22 +1,28 @@
+import 'package:ajieblr_s_application3/presentation/home_page_screen/home_page_screen.dart';
 import 'package:ajieblr_s_application3/presentation/login_page_revisi_screen/login_page_revisi_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../../core/app_export.dart';
 import '../../widgets/custom_elevated_button.dart';
 import '../../widgets/custom_text_form_field.dart'; // ignore_for_file: must_be_immutable
 
-class DaftarPageRevisiScreen extends StatelessWidget {
+class DaftarPageRevisiScreen extends StatefulWidget {
   DaftarPageRevisiScreen({Key? key})
       : super(
           key: key,
         );
 
-  TextEditingController userNameController = TextEditingController();
+  @override
+  State<DaftarPageRevisiScreen> createState() => _DaftarPageRevisiScreenState();
+}
 
-  TextEditingController phoneNumberOneController = TextEditingController();
+class _DaftarPageRevisiScreenState extends State<DaftarPageRevisiScreen> {
+  TextEditingController _userNameController = TextEditingController();
 
-  TextEditingController passwordController = TextEditingController();
+  // TextEditingController phoneNumberOneController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
 
-  TextEditingController password1Controller = TextEditingController();
+  TextEditingController _password1Controller = TextEditingController();
 
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -61,8 +67,8 @@ class DaftarPageRevisiScreen extends StatelessWidget {
                     SizedBox(height: 28.v),
                     _buildUserName(context),
                     SizedBox(height: 20.v),
-                    _buildPhoneNumberOne(context),
-                    SizedBox(height: 20.v),
+                    // _buildPhoneNumberOne(context),
+                    // SizedBox(height: 20.v),
                     _buildPassword(context),
                     SizedBox(height: 20.v),
                     _buildPassword1(context),
@@ -110,29 +116,29 @@ class DaftarPageRevisiScreen extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 40.h),
       child: CustomTextFormField(
-        controller: userNameController,
+        controller: _userNameController,
         hintText: "Username",
       ),
     );
   }
 
   /// Section Widget
-  Widget _buildPhoneNumberOne(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 40.h),
-      child: CustomTextFormField(
-        controller: phoneNumberOneController,
-        hintText: "No Telepon",
-      ),
-    );
-  }
+  // Widget _buildPhoneNumberOne(BuildContext context) {
+  //   return Padding(
+  //     padding: EdgeInsets.symmetric(horizontal: 40.h),
+  //     child: CustomTextFormField(
+  //       controller: phoneNumberOneController,
+  //       hintText: "No Telepon",
+  //     ),
+  //   );
+  // }
 
   /// Section Widget
   Widget _buildPassword(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 40.h),
       child: CustomTextFormField(
-        controller: passwordController,
+        controller: _passwordController,
         hintText: "Password",
         textInputType: TextInputType.visiblePassword,
         obscureText: true,
@@ -145,7 +151,7 @@ class DaftarPageRevisiScreen extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 40.h),
       child: CustomTextFormField(
-        controller: password1Controller,
+        controller: _password1Controller,
         hintText: "Repeat Password",
         textInputAction: TextInputAction.done,
         textInputType: TextInputType.visiblePassword,
@@ -161,8 +167,14 @@ class DaftarPageRevisiScreen extends StatelessWidget {
       text: "Daftar",
       buttonTextStyle: CustomTextStyles.labelLargeBlack900,
       onPressed: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => LoginPageRevisiScreen()));
+        FirebaseAuth.instance.createUserWithEmailAndPassword(email: _userNameController.text, password: _passwordController.text).then((value) {
+          print("Create New Account");
+          Navigator.push(context, MaterialPageRoute(builder: (context) => HomePageScreen()));
+        }).onError((error, stackTrace) {
+          print("Error ${error.toString()}");
+        });
       },
     );
   }
+  
 }

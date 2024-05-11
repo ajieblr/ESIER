@@ -1,18 +1,45 @@
+import 'package:ajieblr_s_application3/presentation/daftar_page_revisi_screen/daftar_page_revisi_screen.dart';
 import 'package:ajieblr_s_application3/presentation/home_page_screen/home_page_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:sign_in_button/sign_in_button.dart';
 import '../../core/app_export.dart';
 import '../../widgets/custom_elevated_button.dart';
-import '../../widgets/custom_text_form_field.dart'; // ignore_for_file: must_be_immutable
+import '../../widgets/custom_text_form_field.dart';
 
-class LoginPageRevisiScreen extends StatelessWidget {
-  LoginPageRevisiScreen({Key? key})
-      : super(
-          key: key,
-        );
+class LoginPageRevisiScreen extends StatefulWidget {
+  const LoginPageRevisiScreen({Key? key}) : super(key: key);
 
-  TextEditingController userNameController = TextEditingController();
+  @override
+  State<LoginPageRevisiScreen> createState() => _LoginPageRevisiScreenState();
+}
 
-  TextEditingController passwordController = TextEditingController();
+class _LoginPageRevisiScreenState extends State<LoginPageRevisiScreen> {
+  
+  // final FirebaseAuth _auth = FirebaseAuth.instance;
+  // User? _user;
+
+  @override
+  // void initState() {
+  //   super.initState();
+  //   _auth.authStateChanges().listen((event) {
+  //     setState(() {
+  //       _user = event;
+  //       if (_user != null) {
+  //         Navigator.pushReplacement(
+  //           context,
+  //           MaterialPageRoute(builder: (context) => HomePageScreen()),
+  //         );
+  //       } else {
+          
+  //       }
+  //     });
+  //   });
+  // }
+
+  TextEditingController _userNameController = TextEditingController();
+
+  TextEditingController _passwordController = TextEditingController();
 
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -58,7 +85,7 @@ class LoginPageRevisiScreen extends StatelessWidget {
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 40.h),
                       child: CustomTextFormField(
-                        controller: userNameController,
+                        controller: _userNameController,
                         hintText: "Username",
                       ),
                     ),
@@ -66,7 +93,7 @@ class LoginPageRevisiScreen extends StatelessWidget {
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 40.h),
                       child: CustomTextFormField(
-                        controller: passwordController,
+                        controller: _passwordController,
                         hintText: "Password",
                         textInputAction: TextInputAction.done,
                         textInputType: TextInputType.visiblePassword,
@@ -75,14 +102,20 @@ class LoginPageRevisiScreen extends StatelessWidget {
                     ),
                     SizedBox(height: 20.v),
                     CustomElevatedButton(
-                      width: 133.h,
+                      width: 150.h,
                       text: "Login",
                       buttonTextStyle: CustomTextStyles.labelLargeBlack900,
                       onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => HomePageScreen()));
+                        FirebaseAuth.instance.signInWithEmailAndPassword(email: _userNameController.text, password: _passwordController.text).then((value) {
+                          print("Sign In");
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => HomePageScreen()));
+                        });
                       },
                     ),
-                    SizedBox(height: 5.v)
+                    SizedBox(height: 10.v,),
+                    signUpOption(),
+                    SizedBox(height: 120.v),
+                    _googleSigninButton(),
                   ],
                 ),
               ),
@@ -90,6 +123,26 @@ class LoginPageRevisiScreen extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+  // sign up option
+  Row signUpOption() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Text("Don't have account?",
+            style: TextStyle(color: Colors.white70)),
+        GestureDetector(
+          onTap: () {
+            Navigator.push(context,
+                MaterialPageRoute(builder: (context) => DaftarPageRevisiScreen()));
+          },
+          child: const Text(
+            " Sign Up",
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          ),
+        )
+      ],
     );
   }
 
@@ -118,4 +171,27 @@ class LoginPageRevisiScreen extends StatelessWidget {
       ),
     );
   }
+  Widget _googleSigninButton() {
+    return Center(
+      child: SizedBox(
+        height: 40,
+        child: SignInButton(
+          Buttons.google,
+          text: "Sign in with Google",
+          onPressed: () {
+
+          },
+        ),
+      ),
+    );
+  }
+
+  // void _handleGoogleSignIn() {
+  //   try {
+  //     GoogleAuthProvider _googleAuthProvider = GoogleAuthProvider();
+  //     _auth.signInWithProvider(_googleAuthProvider);
+  //   } catch (error) {
+  //     print(error);
+  //   }
+  // }
 }

@@ -1,6 +1,6 @@
 import 'package:ajieblr_s_application3/presentation/profil_page_screen/profil_page_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+// import 'package:flutter/widgets.dart';
 import '../../core/app_export.dart';
 import '../../theme/custom_button_style.dart';
 import '../../widgets/app_bar/appbar_leading_image.dart';
@@ -11,24 +11,41 @@ import '../../widgets/custom_elevated_button.dart';
 import 'widgets/progressbar_item_widget.dart';
 import 'widgets/viewhierarchy_item_widget.dart';
 
-class HomePageScreen extends StatelessWidget {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+import 'package:ajieblr_s_application3/service/database.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+class HomePageScreen extends StatefulWidget {
+
   HomePageScreen({Key? key})
       : super(
           key: key,
         );
-  
 
   @override
-  Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        key: _scaffoldKey,
-        extendBody: true,
-        extendBodyBehindAppBar: true,
-        appBar: _buildAppBar(context),
-        drawer: NavigationDrawer(),
-        body: Container(
+  State<HomePageScreen> createState() => _HomePageScreenState();
+}
+
+class _HomePageScreenState extends State<HomePageScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  Stream? DebitValue;
+
+  getontheload() async {
+  DebitValue = await DatabaseMethods().getValueData();
+  setState(() {
+    
+  });
+}
+
+  Widget allDebitValue() {
+  return StreamBuilder(
+    stream: DebitValue,
+    builder: (context, AsyncSnapshot snapshot){
+    return snapshot.hasData? ListView.builder(
+      itemCount: snapshot.data.docs.length,
+      itemBuilder: (context, index){
+        DocumentSnapshot ds=snapshot.data.docs[index];
+        return Container(
           // margin: EdgeInsets.only(top: 20),
           width: SizeUtils.width,
           height: SizeUtils.height,
@@ -48,7 +65,7 @@ class HomePageScreen extends StatelessWidget {
             child: Column(
               children: [
                 SizedBox(height: 60.v,),
-                _buildColumnPemakaian(context),
+                _buildColumnPemakaian(context, ds['debit_harian']),
                 SizedBox(height: 28.v),
                 Text(
                   "Rincian Pemakaian",
@@ -111,7 +128,26 @@ class HomePageScreen extends StatelessWidget {
               ],
             ),
           ),
-        ),
+        );
+      }): Container();
+  });
+}
+
+  @override
+  void initState() {
+    getontheload();
+    super.initState();
+  }
+
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Scaffold(
+        key: _scaffoldKey,
+        extendBody: true,
+        extendBodyBehindAppBar: true,
+        appBar: _buildAppBar(context),
+        drawer: NavigationDrawer(),
+        body: allDebitValue(),
       ),
     );
   }
@@ -150,55 +186,53 @@ class HomePageScreen extends StatelessWidget {
   }
 
   /// Section Widget
-  Widget _buildColumnPemakaian(BuildContext context) {
-    // List<double> progressValues = [0.3, 0.6, 0.9];
-    // List<String> textValues = ["259", "345", "489"];
-    return Expanded(
-      child: SizedBox(
-        width: double.maxFinite,
-        child: Container(
-          margin: EdgeInsets.only(left: 1.h),
-          padding: EdgeInsets.symmetric(
-            horizontal: 55.h,
-            vertical: 30.v,
-          ),
-          decoration: AppDecoration.outlineBlack.copyWith(
-            borderRadius: BorderRadiusStyle.roundedBorder10,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                "Pemakaian",
-                style: theme.textTheme.titleLarge,
-              ),
-              SizedBox(height: 30.v),
-              Expanded(
+  Widget _buildColumnPemakaian(BuildContext context, double dailyDebit) {
+  return Expanded(
+    child: SizedBox(
+      width: double.maxFinite,
+      child: Container(
+        margin: EdgeInsets.only(left: 1.h),
+        padding: EdgeInsets.symmetric(
+          horizontal: 20.h,
+          vertical: 30.v,
+        ),
+        decoration: AppDecoration.outlineBlack.copyWith(
+          borderRadius: BorderRadiusStyle.roundedBorder10,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              "Pemakaian",
+              style: theme.textTheme.titleLarge,
+            ),
+            SizedBox(height: 30.v),
+            Expanded(
+              child: Center( // Menempatkan baris progress bar di tengah
                 child: SizedBox(
-                  height: 98.v,
-                  child: ListView.separated(
-                    padding: EdgeInsets.only(right: 2.h),
-                    scrollDirection: Axis.horizontal,
-                    separatorBuilder: (context, index) {
-                      return SizedBox(
-                        width: 43.h,
-                      );
-                    },
-                    itemCount: 3,
-                    itemBuilder: (context, index) {
-                      double progressValue = (index + 1) / 3; // Hitung nilai progres yang berbeda
-                      return ProgressbarItemWidget(progressValue: progressValue);
-                    },
+                  height: 100.v,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center, // Menengahkan progress bar
+                    children: [
+                      ProgressbarItemWidget(progressValue: dailyDebit, progressType: ProgressType.daily),
+                      // SizedBox(width: 30.h), // Spasi antara progress bars
+                      // ProgressbarItemWidget(progressValue: 0.6, progressType: ProgressType.weekly),
+                      // SizedBox(width: 30.h), // Spasi antara progress bars
+                      // ProgressbarItemWidget(progressValue: 0.9, progressType: ProgressType.monthly),
+                    ],
                   ),
                 ),
               ),
-              SizedBox(height: 12.v)
-            ],
-          ),
+            ),
+            SizedBox(height: 12.v),
+          ],
         ),
       ),
-    );
-  }
+    ),
+  );
+}
+
+
 
   /// Section Widget
   Widget _buildViewHierarchy(BuildContext context) {

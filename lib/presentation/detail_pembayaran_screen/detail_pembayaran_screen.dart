@@ -251,7 +251,7 @@ class _DetailPembayaranScreenState extends State<DetailPembayaranScreen> {
 
   Widget _buildTambahkan(BuildContext context) {
       return CustomElevatedButton(
-        text: "Tambahkan",
+        text: "Bayar",
         margin: EdgeInsets.only(
           left: 40.h,
           right: 40.h,
